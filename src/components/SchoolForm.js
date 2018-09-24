@@ -19,7 +19,7 @@ class SchoolForm extends Component {
     this.props.postSchool({ name, address, description });
   }
   handleChange(evt) {
-    this.props._createSchool(evt.target.value);
+    this.setState({ [evt.target.name]: [evt.target.value] });
   }
   render() {
     const { name, address, description } = this.state;

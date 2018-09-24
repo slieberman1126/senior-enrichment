@@ -9,12 +9,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 syncAndSeed();
-
 app.use('/api/schools', schools);
 app.use('/api/students', students);
 app.use('/dist', express.static(path.join(__dirname, '..', 'dist')));
-app.use(require('body-parser').json());
-app.get('/', (req, res) =>
+
+app.get('/', (req, res, next) =>
   res.sendFile(path.join(__dirname, '..', 'index.html'))
 );
+
 app.listen(port, () => console.log(`on port ${port}`));
