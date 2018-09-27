@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { postSchool, _createSchool } from '../store';
+import { createSchool } from '../store';
 
 class SchoolForm extends Component {
   constructor(props) {
@@ -13,27 +13,28 @@ class SchoolForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
-  handleSubmit(evt) {
-    evt.preventDefault();
-    const { name, address, description } = this.state;
-    this.props.postSchool({ name, address, description });
+  handleSubmit() {
+    this.props.addSchool(this.state);
+    this.props.history.push('/schools');
   }
   handleChange(evt) {
+    evt.preventDefault();
     this.setState({ [evt.target.name]: [evt.target.value] });
   }
   render() {
     const { name, address, description } = this.state;
+    const { handleChange, handleSubmit } = this;
     return (
       <div>
         <h1>Add a School</h1>
-        <form id="new-school-form" onSubmit={this.handleSubmit}>
+        <form id="new-school-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name:</label>
             <input
               type="text"
               name="name"
               value={name}
-              onChange={this.handleChange}
+              onChange={handleChange}
             />
           </div>
           <div className="form-group">
@@ -42,7 +43,7 @@ class SchoolForm extends Component {
               type="text"
               name="address"
               value={address}
-              onChange={this.handleChange}
+              onChange={handleChange}
             />
           </div>
           <div className="form-group">
@@ -51,7 +52,7 @@ class SchoolForm extends Component {
               type="text"
               name="description"
               value={description}
-              onChange={this.handleChange}
+              onChange={handleChange}
             />
           </div>
           <button type="submit">Submit</button>
@@ -60,20 +61,13 @@ class SchoolForm extends Component {
     );
   }
 }
-const mapStateToProps = state => {
-  return {
-    name: state.name,
-    address: state.address,
-    description: state.description,
-  };
-};
+
 const mapDispatchToProps = dispatch => {
   return {
-    postSchool: school => dispatch(postSchool(school)),
-    _createSchool: school => dispatch(_createSchool(school)),
+    addSchool: school => dispatch(createSchool(school)),
   };
 };
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(SchoolForm);

@@ -13,6 +13,7 @@ const UPDATE_STUDENT = 'UPDATE_STUDENT';
 //Schools action types
 const GET_SCHOOLS = 'GET_SCHOOLS';
 const GET_SCHOOL = 'GET_SCHOOL';
+const SAVE_SCHOOL = 'SAVE_SCHOOL';
 const CREATE_SCHOOL = 'CREATE_SCHOOL';
 const DELETE_SCHOOL = 'DELETE_SCHOOL';
 const UPDATE_SCHOOL = 'UPDATE_SCHOOL';
@@ -61,10 +62,10 @@ export const _createSchool = school => {
 const _deleteSchool = id => {
   return {
     type: DELETE_SCHOOL,
-    id,
+    school: { id },
   };
 };
-const _updateSchool = name => {
+export const _updateSchool = name => {
   return {
     type: UPDATE_SCHOOL,
     name,
@@ -76,7 +77,28 @@ const _getSchool = id => {
     id,
   };
 };
+const _saveSchool = school => {
+  return {
+    type: SAVE_SCHOOL,
+    school,
+  };
+};
+// General thunks
 
+export const loadAll = () => {
+  return dispatch => {
+    return axios
+      .get('/api/students')
+      .then(response => response.data)
+      .then(students => dispatch(_getStudents(students)))
+      .then(() => {
+        axios
+          .get('/api/schools')
+          .then(response => response.data)
+          .then(schools => dispatch(_getSchools(schools)));
+      });
+  };
+};
 // Student thunks
 
 export const getStudent = id => {
@@ -97,7 +119,7 @@ export const getStudents = () => {
       .catch(error => console.error(error));
   };
 };
-export const postStudent = student => {
+export const createStudent = student => {
   return dispatch => {
     return axios
       .post('/api/students', student)
@@ -145,7 +167,7 @@ export const getSchools = () => {
       .then(response => dispatch(_getSchools(response.data)));
   };
 };
-export const postSchool = school => {
+export const createSchool = school => {
   return dispatch => {
     return axios
       .post('/api/schools', school)
@@ -154,66 +176,85 @@ export const postSchool = school => {
       .catch(error => console.log(error));
   };
 };
-export const deleteSchool = (school, history) => {
+export const deleteSchool = (id, history) => {
   return dispatch => {
     return axios
-      .delete(`/api/schools/${school.id}`)
+      .delete(`/api/schools/${id}`)
       .then(response => response.data)
-      .then(() => dispatch(_deleteSchool(school)))
+      .then(() => dispatch(_deleteSchool(id)))
       .then(() => history.push('/schools'))
       .catch(error => console.log(error));
   };
 };
-export const updateSchool = (school, update, history) => {
+export const saveSchool = school => {
   return dispatch => {
     return axios
-      .put(`/api/schools/${school.id}`, update)
+      .put(`/api/schools/${school.id}`, school)
       .then(response => response.data)
-      .then(updatedSchool => dispatch(_updateSchool(updatedSchool)))
-      .then(() => history.push(`/schools/${school.id}`))
+      .then(savedSchool => dispatch(_saveSchool(savedSchool)))
       .catch(error => console.log(error));
   };
 };
-
+// initial states
+const studentsInitialState = {
+  students: [],
+  student: {},
+};
+const schoolsInitialState = {
+  schools: [],
+  school: {},
+};
 //   student reducer
-const students = (state = [], action) => {
+const studentsReducer = (state = studentsInitialState, action) => {
   switch (action.type) {
     case CREATE_STUDENT:
-      return [...state, action.student];
+      return { ...state, studentss: [...state.students, action.student] };
     case GET_STUDENTS:
-      return action.students;
+      return { ...state, students: action.students };
     case GET_STUDENT:
-      return [...state, action.student];
+      return { ...state, student: action.student };
     case DELETE_STUDENT:
-      return state.filter(student => student.id !== action.student.id);
-    case UPDATE_STUDENT:
-      return state.map(
-        student => (student.id === action.student.id ? action.student : student)
+      const students = state.students.filter(
+        student => student.id !== action.student.id
       );
+      return { ...state, students };
+    case UPDATE_STUDENT:
+      return { ...state, student: action.student };
     default:
       return state;
   }
 };
 
 //school reducer
-const schools = (state = [], action) => {
+const schoolsReducer = (state = [], action) => {
   switch (action.type) {
+    case GET_SCHOOL:
+      return { ...state, school: action.school };
     case GET_SCHOOLS:
       return action.schools;
+    case SAVE_SCHOOL:
+      const filter = state.schools.filter(
+        school => school.id !== action.school.id
+      );
+      return { ...state, schools: [...filter, action.school] };
     case CREATE_SCHOOL:
       return [...state, action.school];
     case DELETE_SCHOOL:
-      return state.filter(school => school.id !== action.school.id);
-    case UPDATE_SCHOOL:
-      return state.map(
-        school => (school.id === action.school.id ? action.school : school)
+      const schools = state.schools.filter(
+        school => school.id !== action.school.id
       );
+      return { ...state, schools };
+    case UPDATE_SCHOOL:
+      return { ...state, school: action.school };
     default:
       return state;
   }
 };
 
-const reducer = combineReducers({ students, schools });
+const reducer = combineReducers({
+  students: studentsReducer,
+  schools: schoolsReducer,
+});
 
 const store = createStore(reducer, applyMiddleware(logger, thunk));
 

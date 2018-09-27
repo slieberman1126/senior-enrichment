@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import StudentItem from './StudentItem';
+import { Link, Redirect } from 'react-router-dom';
+import Student from './Student';
 import { connect } from 'react-redux';
 
 const Students = ({ students }) => {
@@ -9,11 +9,14 @@ const Students = ({ students }) => {
       <h3>Students</h3>
 
       {students.map(student => (
-        <div className="single-student" key={student.id}>
+        <div
+          className="single-student"
+          key={student.id}
+          id={student.id}
+          student={student}
+        >
           <Link to={`/students/${student.id}`}>
-            <h3>
-              {student.firstName} {student.gpa}
-            </h3>
+            {student.firstName} {student.gpa}
           </Link>
         </div>
       ))}
@@ -24,9 +27,9 @@ const Students = ({ students }) => {
   );
 };
 
-const mapStateToProps = ({ students }) => {
+const mapStateToProps = ({ studentsReducer }) => {
   return {
-    students,
+    students: studentsReducer.students,
   };
 };
 
