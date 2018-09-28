@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { deleteSchool, createSchool, getSchools } from '../store';
 
 class Schools extends Component {
+  componentDidUpdate() {}
+
   render() {
     const { schools, deleteSchool } = this.props;
 
@@ -24,6 +26,10 @@ class Schools extends Component {
             );
           })}
         </ul>
+
+        <Link to="/schools/create">
+          <button>Create School</button>
+        </Link>
       </div>
     );
   }
@@ -31,12 +37,13 @@ class Schools extends Component {
 
 const mapStateToProps = ({ schools }) => {
   return {
-    schools: schools.schools,
+    schools,
   };
 };
 const mapDispatchToProps = (dispatch, { history }) => {
   return {
     deleteSchool: id => dispatch(deleteSchool(id, history)),
+    getSchools: () => dispatch(getSchools()),
   };
 };
 

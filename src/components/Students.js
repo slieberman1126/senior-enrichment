@@ -27,9 +27,9 @@ const Students = ({ students }) => {
   );
 };
 
-const mapStateToProps = ({ studentsReducer }) => {
+const mapStateToProps = ({ students }) => {
   return {
-    students: studentsReducer.students,
+    students,
   };
 };
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 const Nav = ({ students, schools }) => {
   return (
     <div>
@@ -17,8 +18,8 @@ const Nav = ({ students, schools }) => {
 
 const mapStateToProps = ({ students, schools }) => {
   return {
-    students: students.students,
-    schools: schools.schools,
+    students,
+    schools,
   };
 };
 

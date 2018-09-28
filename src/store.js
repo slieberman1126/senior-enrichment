@@ -182,7 +182,7 @@ export const deleteSchool = (id, history) => {
       .delete(`/api/schools/${id}`)
       .then(response => response.data)
       .then(() => dispatch(_deleteSchool(id)))
-      .then(() => history.push('/schools'))
+      .then(() => history && history.push('/schools'))
       .catch(error => console.log(error));
   };
 };
@@ -200,10 +200,7 @@ const studentsInitialState = {
   students: [],
   student: {},
 };
-const schoolsInitialState = {
-  schools: [],
-  school: {},
-};
+
 //   student reducer
 const studentsReducer = (state = studentsInitialState, action) => {
   switch (action.type) {
@@ -240,10 +237,7 @@ const schoolsReducer = (state = [], action) => {
     case CREATE_SCHOOL:
       return [...state, action.school];
     case DELETE_SCHOOL:
-      const schools = state.schools.filter(
-        school => school.id !== action.school.id
-      );
-      return { ...state, schools };
+      return state.filter(school => school.id !== action.school.id);
     case UPDATE_SCHOOL:
       return { ...state, school: action.school };
     default:
