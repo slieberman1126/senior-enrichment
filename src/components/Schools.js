@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Link, HashRouter as Router } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { deleteSchool, createSchool, getSchools } from '../store';
+import { deleteSchool } from '../store';
 
 class Schools extends Component {
-  componentDidUpdate() {}
-
+  constructor(props) {
+    super(props);
+  }
   render() {
     const { schools, deleteSchool } = this.props;
-
     return (
       <div>
         <h1>Schools</h1>
@@ -35,15 +35,15 @@ class Schools extends Component {
   }
 }
 
-const mapStateToProps = ({ schools }) => {
+const mapStateToProps = ({ schools, students }) => {
   return {
     schools,
+    students,
   };
 };
-const mapDispatchToProps = (dispatch, { history }) => {
+const mapDispatchToProps = dispatch => {
   return {
-    deleteSchool: id => dispatch(deleteSchool(id, history)),
-    getSchools: () => dispatch(getSchools()),
+    deleteSchool: id => dispatch(deleteSchool(id)),
   };
 };
 
@@ -51,42 +51,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Schools);
-/*
-        <div>
-          <form>
-            <div>
-              <label htmlFor="schoolName">Name: </label>
-              <input
-                id="schoolName"
-                value={name}
-                onChange={handleChange}
-                type="text"
-                name="name"
-              />
-            </div>
-            <div>
-              <label htmlFor="schoolAddress">Address: </label>
-              <input
-                id="schoolAddress"
-                value={address}
-                onChange={handleChange}
-                type="text"
-                name="address"
-              />
-            </div>
-            <div>
-              <label htmlFor="schoolDescription">Description: </label>
-              <input
-                id="schoolDescription"
-                value={description}
-                onChange={handleChange}
-                type="text"
-                name="description"
-              />
-            </div>
-            <div>
-              <button>Submit</button>
-            </div>
-          </form>
-        </div>
-        */

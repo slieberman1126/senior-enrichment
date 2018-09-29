@@ -1,43 +1,45 @@
 const { School, Student, conn } = require('./models');
 const syncAndSeed = () => {
-  let moe, larry, curly, foxMeadow, quakerRidge, greenacres;
-  return conn
-    .sync({ force: true })
-    .then(() => {
-      return Promise.all([
-        Student.create({ firstName: 'moe', lastName: 'Moe', gpa: 3.5 }),
-        Student.create({ firstName: 'curly', lastName: 'Curly', gpa: 3.6 }),
-        Student.create({ firstName: 'larry', lastName: 'Larry', gpa: 3.9 }),
-      ]);
-    })
-    .then(students => {
-      [moe, larry, curly] = students;
-      return Promise.all([
-        School.create({
-          name: 'Fox Meadow',
-          address: '123 Main Street',
-          description: 'elementary school',
-        }),
-        School.create({
-          name: 'Quaker Ridge',
-          address: '12 Post Road',
-          description: 'middle school',
-        }),
-        School.create({
-          name: 'Greenacres',
-          address: '45 Park Road',
-          description: 'high school',
-        }),
-      ]);
-    })
-    .then(schools => {
-      [foxMeadow, quakerRidge, greenacres] = schools;
-      return Promise.all([
-        moe.setSchool(quakerRidge),
-        larry.setSchool(quakerRidge),
-        curly.setSchool(foxMeadow),
-      ]);
-    });
+  conn.sync({ force: true }).then(() => {
+    Promise.all([
+      School.create({
+        name: 'Fox Meadow',
+        address: '123 Main Street',
+        description: 'elementary school',
+      }),
+      School.create({
+        name: 'Quaker Ridge',
+        address: '324 Post Road',
+        description: 'middle school',
+      }),
+      School.create({
+        name: 'Scarsdale High School',
+        address: '567 Park Ave',
+        description: 'high school',
+      }),
+      //_________________________________________________
+      Student.create({
+        firstName: 'Moe',
+        lastName: 'MOE',
+        gpa: 3.5,
+        schoolId: 2,
+      }),
+      Student.create({
+        firstName: 'Curly',
+        lastName: 'CURLY',
+        gpa: 3.9,
+        schoolId: 1,
+      }),
+      Student.create({
+        firstName: 'Larry',
+        lastName: 'LARRY',
+        gpa: 4.0,
+        schoolId: 3,
+      }),
+    ])
+      .then(() => console.log('DB seeded!'))
+      .catch(e => console.error(e));
+  });
 };
 module.exports = {
   models: {

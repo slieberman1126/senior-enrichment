@@ -10,32 +10,35 @@ class SchoolForm extends Component {
       address: '',
       description: '',
     };
+    this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
-  handleSubmit() {
-    this.props.addSchool(this.state);
-    this.props.history.push('/schools');
-  }
-  handleChange(evt) {
+
+  handleSubmit(evt) {
     evt.preventDefault();
-    this.setState({ [evt.target.name]: [evt.target.value] });
+    const name = evt.target.name.value;
+    const address = evt.target.address.value;
+    const description = evt.target.description.value;
+    this.props
+      .createSchool({ name, address, description })
+      .then(() => this.props.history.push('/schools'));
   }
+  onChange(evt) {
+    this.setState({
+      [evt.target.name]: evt.target.value,
+    });
+  }
+
   render() {
+    const { handleSubmit, onChange } = this;
     const { name, address, description } = this.state;
-    const { handleChange, handleSubmit } = this;
     return (
       <div>
         <h1>Add a School</h1>
         <form id="new-school-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={name}
-              onChange={handleChange}
-            />
+            <input type="text" name="name" value={name} onChange={onChange} />
           </div>
           <div className="form-group">
             <label htmlFor="address">Address:</label>
@@ -43,7 +46,7 @@ class SchoolForm extends Component {
               type="text"
               name="address"
               value={address}
-              onChange={handleChange}
+              onChange={onChange}
             />
           </div>
           <div className="form-group">
@@ -52,10 +55,13 @@ class SchoolForm extends Component {
               type="text"
               name="description"
               value={description}
-              onChange={handleChange}
+              onChange={onChange}
             />
           </div>
-          <button type="submit">Submit</button>
+
+          <button type="submit" disabled={!name || !address || !description}>
+            Submit
+          </button>
         </form>
       </div>
     );
@@ -64,7 +70,7 @@ class SchoolForm extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addSchool: school => dispatch(createSchool(school)),
+    createSchool: school => dispatch(createSchool(school)),
   };
 };
 export default connect(

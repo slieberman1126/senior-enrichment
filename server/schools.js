@@ -11,8 +11,13 @@ router.get('/', (req, res, next) => {
     .catch(next);
 });
 router.get('/:id', (req, res, next) => {
-  School.findById(req.params.id).then(school => res.send(school));
+  School.findById(req.params.id, {
+    include: [Student],
+  })
+    .then(school => res.send(school))
+    .catch(next);
 });
+router.use(require('body-parser').json());
 router.post('/', (req, res, next) => {
   School.create(req.body)
     .then(school => res.send(school))
@@ -21,16 +26,6 @@ router.post('/', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
   School.findById(req.params.id)
     .then(school => school.destroy())
-    .then(() =>
-      Student.update(
-        {
-          schoolId: null,
-        },
-        {
-          where: { schoolId: req.params.id },
-        }
-      )
-    )
     .then(() => res.sendStatus(200))
     .catch(next);
 });

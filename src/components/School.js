@@ -1,39 +1,90 @@
-import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import store, { deleteSchool, updateSchool } from '../store';
-const School = ({ school, deleteSchool }) => {
-  if (!school) {
-    return null;
+import { updateSchool } from '../store';
+
+class School extends Component {
+  constructor({ school }) {
+    super();
+
+    this.state = {
+      name: school ? school.name : '',
+      address: school ? school.address : '',
+      description: school ? school.description : '',
+    };
+    this.onChange = this.onChange.bind(this);
+    this.onSave = this.onSave.bind(this);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
+  }
+  componentDidUpdate(prevProps) {
+    if (!prevProps.school && this.props.school) {
+      this.setState({
+        name: this.props.school.name,
+        address: this.props.school.address,
+        description: this.props.school.description,
+      });
+    }
+  }
+  onChange(evt) {
+    this.setState({ [evt.target.name]: evt.target.value });
+  }
+  onSave(evt) {
+    evt.preventDefault();
+    this.props.updateSchool({
+      id: this.props.school.id,
+      name: this.state.name,
+      address: this.state.address,
+      description: this.state.description,
+    });
+    this.props.history.push('/schools');
   }
 
-  return (
-    <div>
-      <h3>{school.name}</h3>
+  render() {
+    if (!this.props.school) {
+      return null;
+    }
+    const { name, address, description } = this.state;
+    const { onChange, onSave } = this;
+    const empty = !name || !address || !description;
+    const changed =
+      this.props.school.name !== name ||
+      this.props.school.address !== address ||
+      this.props.school.description !== description;
+    return (
       <div>
-        <form>
-          <div>
+        <h3>{name}</h3>
+        <div>
+          <form onSubmit={onSave}>
             <div>
-              <label>Name:</label>
-              <input name="name" value={school.name} />
+              <div>
+                <label>Name:</label>
+                <input id="name" name="name" value={name} onChange={onChange} />
+              </div>
+              <div>
+                <label>Address:</label>
+                <input
+                  id="address"
+                  name="address"
+                  value={address}
+                  onChange={onChange}
+                />
+              </div>
+              <div>
+                <label>Description:</label>
+                <input
+                  id="description"
+                  name="description"
+                  value={description}
+                  onChange={onChange}
+                />
+              </div>
+              <button disabled={empty || !changed}>Update</button>
             </div>
-            <div>
-              <label>Address:</label>
-              <input name="address" value={school.address} />
-            </div>
-            <div>
-              <label>Description:</label>
-              <input name="description" value={school.description} />
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-      <div>
-        <button>Save</button>
-      </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 const mapStateToProps = ({ schools }, { match, history }) => {
   const school = schools.find(school => school.id === match.params.id * 1);
@@ -43,10 +94,7 @@ const mapStateToProps = ({ schools }, { match, history }) => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    handleSave: school => dispatch(saveSchool(school)),
-    getSchool: id => dispatch(getSchool(id)),
-    handleChange: school => dispatch(_updateSchool(school)),
-    deleteSchool: school => dispatch(deleteSchool(school)),
+    updateSchool: school => dispatch(updateSchool(school)),
   };
 };
 export default connect(

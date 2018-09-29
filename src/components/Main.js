@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import store, { loadAll } from '../store';
 
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import Schools from './Schools';
 import Students from './Students';
 import School from './School';
@@ -22,14 +22,15 @@ class Main extends Component {
         <Router>
           <div>
             <Route component={Nav} />
-
-            <Route
-              path="/school/create"
-              render={({ history }) => <SchoolForm history={history} />}
-            />
-            <Route path="/students/create" render={() => <StudentForm />} />
-            <Route path="/schools/:id" component={School} />
-            <Route path="/students/:id" render={() => <Student />} />
+            <Switch>
+              <Route exact path="/schools/create" component={SchoolForm} />} />
+              <Route path="/schools/:id" component={School} />
+            </Switch>
+            <Switch>
+              <Route exact path="/students/create" component={StudentForm} />
+              }/>
+              <Route path="/students/:id" component={Student} />
+            </Switch>
             <Route exact path="/schools" component={Schools} />
             <Route exact path="/students" component={Students} />
           </div>
@@ -38,18 +39,13 @@ class Main extends Component {
     );
   }
 }
-const mapStateToProps = ({ students, schools }) => {
-  return {
-    students,
-    schools,
-  };
-};
+
 const mapDispatchToProps = dispatch => {
   return {
     loadAll: () => dispatch(loadAll()),
   };
 };
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(Main);

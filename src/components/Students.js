@@ -1,36 +1,65 @@
-import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import Student from './Student';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { deleteStudent } from '../store';
 
-const Students = ({ students }) => {
-  return (
-    <div>
-      <h3>Students</h3>
+class Students extends Component {
+  render() {
+    const { students, deleteStudent } = this.props;
+    return (
+      <div>
+        <h1>Students</h1>
 
-      {students.map(student => (
-        <div
-          className="single-student"
-          key={student.id}
-          id={student.id}
-          student={student}
-        >
-          <Link to={`/students/${student.id}`}>
-            {student.firstName} {student.gpa}
-          </Link>
-        </div>
-      ))}
-      <Link to="/students/create">
-        <button>New Student</button>
-      </Link>
-    </div>
-  );
-};
+        <ul>
+          {students.map(student => {
+            return (
+              <li key={student.id}>
+                <Link to={`/students/${student.id}`}>
+                  {student.firstName} {student.lastName} {student.gpa}
+                </Link>
+                <span>
+                  <Link to={`/schools/${student.schoolId}`}>
+                    {this.props.matchSchool(student.schoolId)}
+                  </Link>
+                </span>
+                <button
+                  className="btn"
+                  onClick={() => deleteStudent(student.id)}
+                >
+                  X
+                </button>
+              </li>
+            );
+          })}
+        </ul>
 
-const mapStateToProps = ({ students }) => {
+        <Link to="/students/create">
+          <button>Create Student</button>
+        </Link>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = ({ students, schools }) => {
+  const matchSchool = schoolId => {
+    const school = schools.find(school => {
+      return school.id === schoolId;
+    });
+    return school.name;
+  };
   return {
     students,
+    schools,
+    matchSchool,
   };
 };
-
-export default connect(mapStateToProps)(Students);
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteStudent: id => dispatch(deleteStudent(id)),
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Students);
