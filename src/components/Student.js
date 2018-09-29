@@ -12,33 +12,6 @@ class Student extends Component {
       gpa: student ? student.gpa : '',
       schoolId: student ? student.schoolId : '',
     };
-    this.onChange = this.onChange.bind(this);
-    this.onSave = this.onSave.bind(this);
-    this.componentDidUpdate = this.componentDidUpdate.bind(this);
-  }
-  componentDidUpdate(prevProps) {
-    if (!prevProps.student && this.props.student) {
-      this.setState({
-        firstName: this.props.student.firstName,
-        lastName: this.props.student.lastName,
-        gpa: this.props.student.gpa,
-        schoolId: this.props.student.schoolId,
-      });
-    }
-  }
-  onChange(evt) {
-    this.setState({ [evt.target.name]: evt.target.value });
-  }
-  onSave(evt) {
-    evt.preventDefault();
-    this.props.updateStudent({
-      id: this.props.student.id,
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      gpa: this.state.gpa,
-      schoolId: this.state.schoolId,
-    });
-    this.props.history.push('/students');
   }
 
   render() {

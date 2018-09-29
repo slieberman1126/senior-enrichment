@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { Container, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { createStudent } from '../store';
 
@@ -16,12 +15,17 @@ class StudentForm extends Component {
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+  componentDidMount() {
+    if (this.props.schoolId) {
+      this.setState({ schoolId: this.props.schoolId });
+    }
+  }
   handleSubmit(evt) {
     evt.preventDefault();
-    const firstName = evt.target.firstName.value;
-    const lastName = evt.target.lastName.value;
-    const gpa = evt.target.gpa.value;
-    const schoolId = evt.target.schoolId.value;
+    const firstName = this.state.firstName;
+    const lastName = this.state.lastName;
+    const gpa = this.state.gpa;
+    const schoolId = this.state.schoolId;
     this.props
       .createStudent({
         firstName,
@@ -44,63 +48,52 @@ class StudentForm extends Component {
     return (
       <div>
         <h1>Add a Student</h1>
-        <Container>
-          <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label for="first">First Name:</Label>
-              <Input
-                id="first"
-                type="text"
-                name="first"
-                value={firstName}
-                onChange={onChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="last">Last Name:</Label>
-              <Input
-                id="last"
-                type="text"
-                name="last"
-                value={lastName}
-                onChange={onChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="gpa">GPA: </Label>
-              <Input
-                id="gpa"
-                type="number"
-                name="gpa"
-                value={gpa}
-                onChange={onChange}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="schoolId">School:</Label>
-              <Input
-                id="schoolId"
-                value={schoolId}
-                onChange={onChange}
-                type="select"
-                name="schoolId"
-              >
-                <option>None</option>
-                {schools.map(school => {
-                  return (
-                    <option key={school.id} value={school.id}>
-                      {school.name}
-                    </option>
-                  );
-                })}
-              </Input>
-            </FormGroup>
+        <form id="new-school-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="first">First Name:</label>
+            <input
+              type="text"
+              name="firstName"
+              value={firstName}
+              onChange={onChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="last">Last Name:</label>
+            <input
+              type="text"
+              name="lastName"
+              value={lastName}
+              onChange={onChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="gpa">GPA:</label>
+            <input type="number" name="gpa" value={gpa} onChange={onChange} />
+          </div>
+          <div className="form-group">
+            <label htmlFor="schoolId">School:</label>
+            <select
+              type="text"
+              name="schoolId"
+              value={schoolId}
+              onChange={onChange}
+            >
+              <option>none</option>
+              {schools.map(school => {
+                return (
+                  <option key={school.id} value={school.id}>
+                    {school.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
 
-            <Button type="submit" disabled={!firstName || !lastName || !gpa}>
-              Submit
-            </Button>
-          </Form>
-        </Container>
+          <button type="submit" disabled={!firstName || !lastName || !gpa}>
+            Submit
+          </button>
+        </form>
       </div>
     );
   }
