@@ -6,6 +6,7 @@ import { deleteStudent } from '../store';
 class Students extends Component {
   render() {
     const { students, deleteStudent } = this.props;
+
     return (
       <div>
         <h1>Students</h1>
@@ -19,7 +20,7 @@ class Students extends Component {
                 </Link>
                 <span>
                   <Link to={`/schools/${student.schoolId}`}>
-                    {this.props.matchSchool(student.schoolId)}
+                    {student.schools}
                   </Link>
                 </span>
                 <button
@@ -42,16 +43,9 @@ class Students extends Component {
 }
 
 const mapStateToProps = ({ students, schools }) => {
-  const matchSchool = schoolId => {
-    const school = schools.find(school => {
-      return school.id === schoolId;
-    });
-    return school.name;
-  };
   return {
     students,
     schools,
-    matchSchool,
   };
 };
 const mapDispatchToProps = dispatch => {

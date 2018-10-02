@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { createStudent } from '../store';
 
 class StudentForm extends Component {
@@ -79,7 +78,7 @@ class StudentForm extends Component {
               value={schoolId}
               onChange={onChange}
             >
-              <option>none</option>
+              <option value="">none</option>
               {schools.map(school => {
                 return (
                   <option key={school.id} value={school.id}>

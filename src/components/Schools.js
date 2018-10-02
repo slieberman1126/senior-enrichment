@@ -8,10 +8,12 @@ class Schools extends Component {
     super(props);
   }
   render() {
-    const { schools, deleteSchool } = this.props;
+    const { schools, deleteSchool, students } = this.props;
     return (
       <div>
-        <h1>Schools</h1>
+        <h1>
+          Schools ({schools.length}) Students ({students.length})
+        </h1>
 
         <ul>
           {schools.map(school => {

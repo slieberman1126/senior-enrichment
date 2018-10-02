@@ -26,6 +26,16 @@ router.post('/', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
   School.findById(req.params.id)
     .then(school => school.destroy())
+    .then(() =>
+      Student.update(
+        {
+          schoolId: '',
+        },
+        {
+          where: { schoolId: req.params.id },
+        }
+      )
+    )
     .then(() => res.sendStatus(200))
     .catch(next);
 });
