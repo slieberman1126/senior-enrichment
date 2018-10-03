@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { loadAll } from '../store';
+import { getStudents, getSchools } from '../store';
 
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import Schools from './Schools';
@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 
 class Main extends Component {
   componentDidMount() {
-    this.props.loadAll();
+    this.props.init();
   }
 
   render() {
@@ -42,7 +42,7 @@ class Main extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadAll: () => dispatch(loadAll()),
+    init: () => dispatch(getStudents()).then(() => dispatch(getSchools())),
   };
 };
 export default connect(

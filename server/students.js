@@ -1,20 +1,15 @@
 const express = require('express');
-const { Student, School } = require('../db').models;
+const { Student } = require('../db').models;
 const router = express.Router();
 module.exports = router;
 
 router.get('/', (req, res, next) => {
-  Student.findAll({
-    order: [['lastName', 'DESC']],
-    include: [School],
-  })
+  Student.findAll()
     .then(students => res.send(students))
     .catch(next);
 });
 router.get('/:id', (req, res, next) => {
-  Student.findById(req.params.id, {
-    include: [School],
-  })
+  Student.findById(req.params.id)
     .then(student => res.send(student))
     .catch(next);
 });

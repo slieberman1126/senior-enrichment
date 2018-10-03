@@ -5,24 +5,24 @@ import { deleteStudent } from '../store';
 
 class Students extends Component {
   render() {
-    const { students, deleteStudent } = this.props;
-
+    const { schools, students } = this.props;
     return (
       <div>
         <h1>Students</h1>
 
         <ul>
           {students.map(student => {
+            const schoolsStudents = schools.find(
+              school => school.id === student.schoolId
+            );
             return (
               <li key={student.id}>
                 <Link to={`/students/${student.id}`}>
-                  {student.firstName} {student.lastName} {student.gpa}
+                  {student.firstName} {student.lastName}
                 </Link>
-                <span>
-                  <Link to={`/schools/${student.schoolId}`}>
-                    {student.schools}
-                  </Link>
-                </span>
+                <Link to={`/schools/${student.schoolId}`}>
+                  {schoolsStudents ? schoolsStudents.name : 'none'}
+                </Link>
                 <button
                   className="btn"
                   onClick={() => deleteStudent(student.id)}
@@ -42,10 +42,10 @@ class Students extends Component {
   }
 }
 
-const mapStateToProps = ({ students, schools }) => {
+const mapStateToProps = ({ schools, students }) => {
   return {
-    students,
     schools,
+    students,
   };
 };
 const mapDispatchToProps = dispatch => {

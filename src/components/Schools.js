@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { deleteSchool } from '../store';
 
 class Schools extends Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
-    const { schools, deleteSchool, students } = this.props;
+    const { schools, students } = this.props;
+
     return (
       <div>
         <h1>
@@ -17,10 +15,13 @@ class Schools extends Component {
 
         <ul>
           {schools.map(school => {
+            const studentsSchools = students.filter(
+              student => student.schoolId === school.id
+            );
             return (
               <li key={school.id}>
                 <Link to={`/schools/${school.id}`}>{school.name}</Link>(
-                {school.students.length})
+                {studentsSchools.length})
                 <button className="btn" onClick={() => deleteSchool(school.id)}>
                   X
                 </button>

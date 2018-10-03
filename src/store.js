@@ -68,21 +68,6 @@ const _updateSchool = school => {
   };
 };
 
-// General thunks
-export const loadAll = () => {
-  return dispatch => {
-    return axios
-      .get('/api/students')
-      .then(response => response.data)
-      .then(students => dispatch(_getStudents(students)))
-      .then(() => {
-        axios
-          .get('/api/schools')
-          .then(response => response.data)
-          .then(schools => dispatch(_getSchools(schools)));
-      });
-  };
-};
 // Student thunks
 
 export const getStudents = () => {
@@ -112,12 +97,13 @@ export const deleteStudent = id => {
       .catch(error => console.log(error));
   };
 };
-export const updateStudent = student => {
+export const updateStudent = (student, history) => {
   return dispatch => {
     return axios
       .put(`/api/students/${student.id}`, student)
       .then(response => response.data)
       .then(updatedStudent => dispatch(_updateStudent(updatedStudent)))
+      .then(() => history.push('/student'))
       .catch(error => console.log(error));
   };
 };
@@ -151,12 +137,13 @@ export const deleteSchool = id => {
       .catch(error => console.log(error));
   };
 };
-export const updateSchool = school => {
+export const updateSchool = (school, history) => {
   return dispatch => {
     return axios
       .put(`/api/schools/${school.id}`, school)
       .then(response => response.data)
       .then(school => dispatch(_updateSchool(school)))
+      .then(() => history.push('/school'))
       .catch(error => console.log(error));
   };
 };

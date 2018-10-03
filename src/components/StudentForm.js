@@ -24,7 +24,7 @@ class StudentForm extends Component {
     const firstName = this.state.firstName;
     const lastName = this.state.lastName;
     const gpa = this.state.gpa;
-    const schoolId = this.state.schoolId;
+    const schoolId = this.state.schoolId || null;
     this.props
       .createStudent({
         firstName,

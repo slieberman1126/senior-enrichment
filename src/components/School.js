@@ -7,6 +7,7 @@ class School extends Component {
   constructor(props) {
     super(props);
     const school = this.props.school;
+
     this.state = {
       name: school ? school.name : '',
       address: school ? school.address : '',
@@ -16,6 +17,7 @@ class School extends Component {
     this.onSave = this.onSave.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
     this.handleUnenroll = this.handleUnenroll.bind(this);
+    this.handleEnroll = this.handleEnroll.bind(this);
   }
   componentDidUpdate(prevProps) {
     if (!prevProps.school && this.props.school) {
@@ -23,6 +25,7 @@ class School extends Component {
         name: this.props.school.name,
         address: this.props.school.address,
         description: this.props.school.description,
+        schoolId: this.props.student.schoolId,
       });
     }
   }
@@ -31,26 +34,39 @@ class School extends Component {
   }
   onSave(evt) {
     evt.preventDefault();
-    this.props.updateSchool({
-      id: this.props.school.id,
-      name: this.state.name,
-      address: this.state.address,
-      description: this.state.description,
-    });
-    this.props.history.push('/schools');
+    this.props
+      .updateSchool({
+        id: this.props.school.id,
+        name: this.state.name,
+        address: this.state.address,
+        description: this.state.description,
+      })
+      .then(() => this.props.history.push('/schools/'));
   }
-  handleUnenroll(student) {
-    const update = { ...student, schoolId: null };
-    this.props.updateStudent(update);
+  handleUnenroll(student, school) {
+    this.props
+      .updateStudent({ ...student, schoolId: null })
+      .then(() => this.props.history.push(`/schools/${school.id}`));
+  }
+  handleEnroll(student, school) {
+    this.props
+      .updateStudent({ ...student, schoolId: school.id })
+      .then(() => this.props.history.push(`/schools/${school.id}`));
   }
 
   render() {
     if (!this.props.school) {
       return null;
     }
-    const { school } = this.props;
+    const { students, school } = this.props;
     const { name, address, description } = this.state;
-    const { onChange, onSave, handleUnenroll } = this;
+    const { onChange, onSave, handleUnenroll, handleEnroll } = this;
+    const findEnrolled = students.filter(
+      student => student.schoolId === school.id
+    );
+    const findUnenrolled = students.filter(
+      student => student.schoolId !== school.id
+    );
     const empty = !name || !address || !description;
     const changed =
       this.props.school.name !== name ||
@@ -92,19 +108,41 @@ class School extends Component {
           <h4>Students Enrolled:</h4>
         </div>
         <div>
-          {school.students.map(student => (
-            <li key={student.id}>
-              {student.firstName} {student.lastName}
-              <button className="btn" onClick={() => handleUnenroll(student)}>
-                Unenroll
-              </button>
-            </li>
-          ))}
+          {findEnrolled.map(enrolled => {
+            return (
+              <li key={enrolled.id}>
+                <Link to={`/students/${enrolled.id}`}>
+                  {enrolled.firstName} {enrolled.lastName}
+                </Link>
+                <button
+                  className="btn"
+                  onClick={() => handleUnenroll(enrolled, school)}
+                >
+                  Unenroll
+                </button>
+              </li>
+            );
+          })}
         </div>
         <div>
-          <Link to="/students/create/">
-            <button>Add Student</button>
-          </Link>
+          <h4>Students Not enrolled:</h4>
+        </div>
+        <div>
+          {findUnenrolled.map(enrolled => {
+            return (
+              <li key={enrolled.id}>
+                <Link to={`/students/${enrolled.id}`}>
+                  {enrolled.firstName} {enrolled.lastName}
+                </Link>
+                <button
+                  className="btn"
+                  onClick={() => handleEnroll(enrolled, school)}
+                >
+                  Enroll
+                </button>
+              </li>
+            );
+          })}
         </div>
       </div>
     );
@@ -116,12 +154,13 @@ const mapStateToProps = ({ schools, students }, { match, history }) => {
   return {
     school,
     students,
+    history,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, { history }) => {
   return {
-    updateSchool: school => dispatch(updateSchool(school)),
-    updateStudent: student => dispatch(updateStudent(student)),
+    updateSchool: school => dispatch(updateSchool(school, history)),
+    updateStudent: student => dispatch(updateStudent(student, history)),
   };
 };
 export default connect(

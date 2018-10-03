@@ -1,19 +1,15 @@
 const express = require('express');
-const { School, Student } = require('../db').models;
+const { School } = require('../db').models;
 const router = express.Router();
 module.exports = router;
 
 router.get('/', (req, res, next) => {
-  School.findAll({
-    include: [Student],
-  })
+  School.findAll()
     .then(schools => res.send(schools))
     .catch(next);
 });
 router.get('/:id', (req, res, next) => {
-  School.findById(req.params.id, {
-    include: [Student],
-  })
+  School.findById(req.params.id)
     .then(school => res.send(school))
     .catch(next);
 });
@@ -26,16 +22,6 @@ router.post('/', (req, res, next) => {
 router.delete('/:id', (req, res, next) => {
   School.findById(req.params.id)
     .then(school => school.destroy())
-    .then(() =>
-      Student.update(
-        {
-          schoolId: '',
-        },
-        {
-          where: { schoolId: req.params.id },
-        }
-      )
-    )
     .then(() => res.sendStatus(200))
     .catch(next);
 });

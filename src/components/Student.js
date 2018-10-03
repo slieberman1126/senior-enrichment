@@ -79,6 +79,7 @@ class Student extends Component {
             <input
               type="number"
               name="gpa"
+              step="0.1"
               min="1"
               max="4"
               value={gpa}
@@ -113,16 +114,16 @@ class Student extends Component {
   }
 }
 
-const mapStateToProps = ({ schools, students }, { match, history }) => {
+const mapStateToProps = ({ schools, students }, { match }) => {
   const student = students.find(s => s.id === match.params.id * 1);
   return {
     student,
     schools,
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, { history }) => {
   return {
-    updateStudent: student => dispatch(updateStudent(student)),
+    updateStudent: student => dispatch(updateStudent(student, history)),
   };
 };
 export default connect(
