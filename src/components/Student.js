@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateStudent } from '../store';
+import { updateStudent, deleteStudent } from '../store';
 
 class Student extends Component {
   constructor(props) {
@@ -31,13 +31,15 @@ class Student extends Component {
   }
   onSave(evt) {
     evt.preventDefault();
-    this.props.updateStudent({
-      id: this.props.student.id,
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      gpa: this.state.gpa,
-      schoolId: this.state.schoolId,
-    });
+    this.props
+      .updateStudent({
+        id: this.props.student.id,
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        gpa: this.state.gpa,
+        schoolId: this.state.schoolId,
+      })
+      .then(() => this.props.history.push('/students/'));
   }
 
   render() {
@@ -108,6 +110,12 @@ class Student extends Component {
           <button type="submit" disabled={empty || !changed}>
             Update
           </button>
+          <button
+            type="delete"
+            onClick={() => this.props.deleteStudent(student)}
+          >
+            Delete
+          </button>
         </form>
       </div>
     );
@@ -124,6 +132,7 @@ const mapStateToProps = ({ schools, students }, { match }) => {
 const mapDispatchToProps = (dispatch, { history }) => {
   return {
     updateStudent: student => dispatch(updateStudent(student, history)),
+    deleteStudent: student => dispatch(deleteStudent(student)),
   };
 };
 export default connect(

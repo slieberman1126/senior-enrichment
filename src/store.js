@@ -29,10 +29,10 @@ const _getStudents = students => {
     students,
   };
 };
-const _deleteStudent = id => {
+const _deleteStudent = student => {
   return {
     type: DELETE_STUDENT,
-    student: { id },
+    student,
   };
 };
 const _updateStudent = student => {
@@ -55,10 +55,10 @@ const _createSchool = school => {
     school,
   };
 };
-const _deleteSchool = id => {
+const _deleteSchool = school => {
   return {
     type: DELETE_SCHOOL,
-    school: { id },
+    school,
   };
 };
 const _updateSchool = school => {
@@ -88,12 +88,12 @@ export const createStudent = student => {
       .catch(error => console.log(error));
   };
 };
-export const deleteStudent = id => {
+export const deleteStudent = student => {
   return dispatch => {
     return axios
-      .delete(`/api/students/${id}`)
+      .delete(`/api/students/${student.id}`)
       .then(response => response.data)
-      .then(() => dispatch(_deleteStudent(id)))
+      .then(() => dispatch(_deleteStudent(student)))
       .catch(error => console.log(error));
   };
 };
@@ -103,7 +103,7 @@ export const updateStudent = (student, history) => {
       .put(`/api/students/${student.id}`, student)
       .then(response => response.data)
       .then(updatedStudent => dispatch(_updateStudent(updatedStudent)))
-      .then(() => history.push('/student'))
+      .then(() => history.push('/students'))
       .catch(error => console.log(error));
   };
 };
@@ -128,12 +128,12 @@ export const createSchool = school => {
       .catch(error => console.log(error));
   };
 };
-export const deleteSchool = id => {
+export const deleteSchool = school => {
   return dispatch => {
     return axios
-      .delete(`/api/schools/${id}`)
+      .delete(`/api/schools/${school.id}`)
       .then(response => response.data)
-      .then(() => dispatch(_deleteSchool(id)))
+      .then(() => dispatch(_deleteSchool(school)))
       .catch(error => console.log(error));
   };
 };

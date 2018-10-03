@@ -5,7 +5,8 @@ import { deleteStudent } from '../store';
 
 class Students extends Component {
   render() {
-    const { schools, students } = this.props;
+    const { students, schools } = this.props;
+
     return (
       <div>
         <h1>Students</h1>
@@ -23,10 +24,7 @@ class Students extends Component {
                 <Link to={`/schools/${student.schoolId}`}>
                   {schoolsStudents ? schoolsStudents.name : 'none'}
                 </Link>
-                <button
-                  className="btn"
-                  onClick={() => deleteStudent(student.id)}
-                >
+                <button onClick={() => this.props.deleteStudent(student)}>
                   X
                 </button>
               </li>
@@ -50,7 +48,7 @@ const mapStateToProps = ({ schools, students }) => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    deleteStudent: id => dispatch(deleteStudent(id)),
+    deleteStudent: student => dispatch(deleteStudent(student)),
   };
 };
 export default connect(

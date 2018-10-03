@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { updateSchool, updateStudent } from '../store';
+import { updateSchool, updateStudent, deleteSchool } from '../store';
 import { Link } from 'react-router-dom';
 
 class School extends Component {
@@ -101,6 +101,12 @@ class School extends Component {
                 />
               </div>
               <button disabled={empty || !changed}>Update</button>
+              <button
+                className="btn"
+                onClick={() => this.props.deleteSchool(school)}
+              >
+                Delete
+              </button>
             </div>
           </form>
         </div>
@@ -161,6 +167,7 @@ const mapDispatchToProps = (dispatch, { history }) => {
   return {
     updateSchool: school => dispatch(updateSchool(school, history)),
     updateStudent: student => dispatch(updateStudent(student, history)),
+    deleteSchool: school => dispatch(deleteSchool(school)),
   };
 };
 export default connect(
