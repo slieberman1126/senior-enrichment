@@ -45,7 +45,7 @@ class Student extends Component {
   render() {
     const { firstName, lastName, gpa, schoolId } = this.state;
     const { onChange, onSave } = this;
-    const { schools } = this.props;
+    const { schools, student } = this.props;
     const empty = !firstName || !lastName || !gpa;
     const changed =
       this.props.student.firstName !== firstName ||
@@ -122,11 +122,13 @@ class Student extends Component {
   }
 }
 
-const mapStateToProps = ({ schools, students }, { match }) => {
+const mapStateToProps = ({ schools, students }, { match, history }) => {
   const student = students.find(s => s.id === match.params.id * 1);
   return {
     student,
     schools,
+    students,
+    history,
   };
 };
 const mapDispatchToProps = (dispatch, { history }) => {
