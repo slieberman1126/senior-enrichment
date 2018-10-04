@@ -43,6 +43,9 @@ class Student extends Component {
   }
 
   render() {
+    if (!this.props.student) {
+      return null;
+    }
     const { firstName, lastName, gpa, schoolId } = this.state;
     const { onChange, onSave } = this;
     const { schools, student } = this.props;
